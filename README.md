@@ -5,7 +5,7 @@
 [![python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/downloads/)
 [![pages](https://img.shields.io/badge/GitHub_Pages-mikhio.github.io%2Fshortist-blue)](https://mikhio.github.io/shortist/)
 
-> 📊 **Артефакты сдачи рендерятся прямо в браузере через GitHub Pages:**
+> **Артефакты:**
 > [coverage-отчёт](https://mikhio.github.io/shortist/htmlcov/index.html) ·
 > [Locust без кэша](https://mikhio.github.io/shortist/reports/baseline/locust.html) ·
 > [Locust с кэшем](https://mikhio.github.io/shortist/reports/cached/locust.html) ·
@@ -146,7 +146,7 @@ src/main.py                  33      8      0      0    76%
 TOTAL                       276     15     26      3    94%
 ```
 
-Подробный отчёт: [`htmlcov/index.html`](htmlcov/index.html).
+Подробный отчёт: [htmlcov/index.html](https://mikhio.github.io/shortist/htmlcov/index.html).
 
 ---
 
