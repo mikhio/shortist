@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>shortist — артефакты сдачи ИПР-2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.5 system-ui, -apple-system, sans-serif; max-width: 760px; margin: 2em auto; padding: 0 1em; }
+  h1 { margin-bottom: 0.2em; }
+  h2 { margin-top: 1.6em; border-bottom: 1px solid #8884; padding-bottom: 0.2em; }
+  ul { padding-left: 1.4em; }
+  li { margin: 0.3em 0; }
+  code { background: #8881; padding: 0.1em 0.3em; border-radius: 3px; }
+  .muted { color: #888; font-size: 0.9em; }
+</style>
+</head>
+<body>
+<h1>shortist</h1>
+<p class="muted">
+  ДЗ-2 курса «Инструменты промышленной разработки», ФКН ВШЭ, КНАД.<br>
+  Артефакты сдачи опубликованы через GitHub Pages.
+  Исходники и описание подхода — в <a href="https://github.com/mikhio/shortist">репозитории</a>.
+</p>
+
+<h2>Покрытие тестами</h2>
+<ul>
+  <li><a href="htmlcov/index.html">htmlcov/index.html</a> — coverage-отчёт (94 %)</li>
+</ul>
+
+<h2>Нагрузочное тестирование</h2>
+<ul>
+  <li><a href="reports/baseline/locust.html">reports/baseline/locust.html</a> — Locust-отчёт без кэша</li>
+  <li><a href="reports/cached/locust.html">reports/cached/locust.html</a> — Locust-отчёт с кэшем</li>
+</ul>
+
+<h2>Графики</h2>
+<ul>
+  <li><a href="reports/comparison.png">reports/comparison.png</a> — p95 / RPS, оба прогона на одной оси</li>
+  <li><a href="reports/baseline/latency-vs-users.png">reports/baseline/latency-vs-users.png</a></li>
+  <li><a href="reports/cached/latency-vs-users.png">reports/cached/latency-vs-users.png</a></li>
+  <li><a href="reports/docker-stats-comparison.png">reports/docker-stats-comparison.png</a> — CPU контейнеров</li>
+</ul>
+</body>
+</html>
