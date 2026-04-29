@@ -5,12 +5,6 @@
 [![python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/downloads/)
 [![pages](https://img.shields.io/badge/GitHub_Pages-mikhio.github.io%2Fshortist-blue)](https://mikhio.github.io/shortist/)
 
-> **Артефакты:**
-> [coverage-отчёт](https://mikhio.github.io/shortist/htmlcov/index.html) ·
-> [Locust без кэша](https://mikhio.github.io/shortist/reports/baseline/locust.html) ·
-> [Locust с кэшем](https://mikhio.github.io/shortist/reports/cached/locust.html) ·
-> [сводная страница](https://mikhio.github.io/shortist/)
-
 API-сервис сокращения ссылок на FastAPI + PostgreSQL + Redis. Этот форк
 проекта [`neteplo/shortist`](https://github.com/neteplo/shortist) собран
 в рамках **ДЗ-2 курса «Инструменты промышленной разработки»** на
@@ -238,15 +232,13 @@ python scripts/plot_docker_stats.py \
 
 ![Без кэша](reports/baseline/latency-vs-users.png)
 
-Полный Locust-отчёт (рендерится через Pages):
-[reports/baseline/locust.html](https://mikhio.github.io/shortist/reports/baseline/locust.html).
+[Полный Locust-отчёт по прогону без кэша](https://mikhio.github.io/shortist/reports/baseline/locust.html).
 
 **Прогон с кэшем — стационар:**
 
 ![С кэшем](reports/cached/latency-vs-users.png)
 
-Полный Locust-отчёт:
-[reports/cached/locust.html](https://mikhio.github.io/shortist/reports/cached/locust.html).
+[Полный Locust-отчёт по прогону с кэшем](https://mikhio.github.io/shortist/reports/cached/locust.html).
 
 > **Откуда пик в первые 5 секунд графика «с кэшем»?** Это **прогрев
 > кэша**. Locust поднимает 50 юзеров в первые 5 секунд (`spawn_rate=10/с`),
