@@ -26,8 +26,9 @@ async def create_link(
     link = models.Link(
         original_url=original_url,
         short_id=short_id,
+        custom_alias=custom_alias,
         user_id=user_id,
-        expire_at=expire_at
+        expire_at=expire_at,
     )
     db.add(link)
     await db.commit()

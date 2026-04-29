@@ -10,7 +10,6 @@
 """
 from datetime import datetime, timedelta, timezone
 
-import pytest
 from httpx import AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker
@@ -28,14 +27,6 @@ async def _make_expired(session_factory: async_sessionmaker, short_id: str) -> N
         await session.commit()
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "Баг 1: src/links/routers.py:redirect_link не проверяет expire_at — "
-        "просроченные ссылки продолжают редиректить, хотя LinkExpiredError (410) "
-        "уже определён в exceptions.py. Фикс в PR #2."
-    ),
-)
 async def test_expired_link_returns_410(
     async_client: AsyncClient, test_session_factory: async_sessionmaker
 ):
