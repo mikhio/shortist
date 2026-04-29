@@ -1,0 +1,24 @@
+[2026-04-29 15:25:25,050] miMB/INFO/locust.main: Starting Locust 2.43.4
+[2026-04-29 15:25:25,056] miMB/INFO/locust.runners: Shape test starting.
+[2026-04-29 15:25:25,057] miMB/INFO/locust.runners: Shape worker starting
+[2026-04-29 15:25:25,057] miMB/INFO/locust.runners: Shape test updating to 50 users at 10.00 spawn rate
+[2026-04-29 15:25:25,057] miMB/INFO/locustfile: warming up: creating 100 hot links against http://localhost:8000
+[2026-04-29 15:25:25,625] miMB/INFO/locustfile: warmup complete: 100/100
+[2026-04-29 15:25:25,625] miMB/INFO/locust.runners: Ramping to 50 users at a rate of 10.00 per second
+[2026-04-29 15:25:29,631] miMB/INFO/locust.runners: All users spawned: {"LinkCreator": 5, "LinkVisitor": 45} (50 total users)
+[2026-04-29 15:25:55,117] miMB/INFO/locust.runners: Shape test updating to 100 users at 10.00 spawn rate
+[2026-04-29 15:25:55,118] miMB/INFO/locust.runners: Ramping to 100 users at a rate of 10.00 per second
+[2026-04-29 15:25:59,128] miMB/INFO/locust.runners: All users spawned: {"LinkCreator": 10, "LinkVisitor": 90} (100 total users)
+[2026-04-29 15:26:25,181] miMB/INFO/locust.runners: Shape test updating to 200 users at 10.00 spawn rate
+[2026-04-29 15:26:25,182] miMB/INFO/locust.runners: Ramping to 200 users at a rate of 10.00 per second
+[2026-04-29 15:26:34,199] miMB/INFO/locust.runners: All users spawned: {"LinkCreator": 20, "LinkVisitor": 180} (200 total users)
+[2026-04-29 15:26:55,247] miMB/INFO/locust.runners: Shape test updating to 400 users at 20.00 spawn rate
+[2026-04-29 15:26:55,248] miMB/INFO/locust.runners: Ramping to 400 users at a rate of 20.00 per second
+[2026-04-29 15:27:04,270] miMB/INFO/locust.runners: All users spawned: {"LinkCreator": 40, "LinkVisitor": 360} (400 total users)
+[2026-04-29 15:27:25,330] miMB/INFO/locust.runners: Shape test updating to 800 users at 40.00 spawn rate
+[2026-04-29 15:27:25,331] miMB/INFO/locust.runners: Ramping to 800 users at a rate of 40.00 per second
+[2026-04-29 15:27:34,354] miMB/INFO/locust.runners: All users spawned: {"LinkCreator": 80, "LinkVisitor": 720} (800 total users)
+[2026-04-29 15:27:55,393] miMB/INFO/locust.runners: Shape test stopping
+[2026-04-29 15:27:55,566] miMB/INFO/locust.main: Shape test completed, shutting down
+[2026-04-29 15:27:55,600] miMB/INFO/locust.main: writing html report to file: reports/baseline/locust.html
+[2026-04-29 15:27:55,602] miMB/INFO/locust.main: Shutting down (exit code 0)

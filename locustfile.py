@@ -29,6 +29,9 @@ import string
 import requests
 from locust import HttpUser, between, events, task
 
+# Импортируем shape сюда, чтобы Locust подхватил его из `-f locustfile.py`.
+from locust_shape import StepLoadShape  # noqa: F401
+
 logger = logging.getLogger(__name__)
 
 # Пул заранее созданных short_id, общий для всех визитёров.

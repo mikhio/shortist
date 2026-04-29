@@ -17,3 +17,8 @@ coverage.xml
 
 # locust
 locust_logs/
+
+# локальные оверрайды для docker-compose (например, чтобы не публиковать
+# postgres-порт наружу при конфликте с другими контейнерами)
+docker-compose.override.yml
+docker-compose.override.yaml
