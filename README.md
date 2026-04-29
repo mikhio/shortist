@@ -1,8 +1,15 @@
 # shortist
 
 [![tests](https://github.com/mikhio/shortist/actions/workflows/tests.yml/badge.svg)](https://github.com/mikhio/shortist/actions/workflows/tests.yml)
-[![coverage](https://img.shields.io/badge/coverage-94%25-brightgreen)](htmlcov/index.html)
+[![coverage](https://img.shields.io/badge/coverage-94%25-brightgreen)](https://mikhio.github.io/shortist/htmlcov/index.html)
 [![python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/downloads/)
+[![pages](https://img.shields.io/badge/GitHub_Pages-mikhio.github.io%2Fshortist-blue)](https://mikhio.github.io/shortist/)
+
+> 📊 **Артефакты сдачи рендерятся прямо в браузере через GitHub Pages:**
+> [coverage-отчёт](https://mikhio.github.io/shortist/htmlcov/index.html) ·
+> [Locust без кэша](https://mikhio.github.io/shortist/reports/baseline/locust.html) ·
+> [Locust с кэшем](https://mikhio.github.io/shortist/reports/cached/locust.html) ·
+> [сводная страница](https://mikhio.github.io/shortist/)
 
 API-сервис сокращения ссылок на FastAPI + PostgreSQL + Redis. Этот форк
 проекта [`neteplo/shortist`](https://github.com/neteplo/shortist) собран
@@ -91,7 +98,9 @@ open htmlcov/index.html
 ```
 
 В коммит включён готовый [`htmlcov/`](htmlcov/) — отчёт открывается **без
-запуска тестов** (как этого требует задание).
+запуска тестов** (как этого требует задание). На GitHub он также
+доступен в отрендеренном виде через Pages:
+[mikhio.github.io/shortist/htmlcov/](https://mikhio.github.io/shortist/htmlcov/index.html).
 
 ---
 
@@ -229,9 +238,15 @@ python scripts/plot_docker_stats.py \
 
 ![Без кэша](reports/baseline/latency-vs-users.png)
 
+Полный Locust-отчёт (рендерится через Pages):
+[reports/baseline/locust.html](https://mikhio.github.io/shortist/reports/baseline/locust.html).
+
 **Прогон с кэшем — стационар:**
 
 ![С кэшем](reports/cached/latency-vs-users.png)
+
+Полный Locust-отчёт:
+[reports/cached/locust.html](https://mikhio.github.io/shortist/reports/cached/locust.html).
 
 > **Откуда пик в первые 5 секунд графика «с кэшем»?** Это **прогрев
 > кэша**. Locust поднимает 50 юзеров в первые 5 секунд (`spawn_rate=10/с`),
