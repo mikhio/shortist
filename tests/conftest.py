@@ -25,6 +25,8 @@ from typing import AsyncIterator
 
 import pytest
 import pytest_asyncio
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
@@ -34,6 +36,21 @@ from src.database import Base, get_db  # noqa: E402
 from src.main import app  # noqa: E402
 
 TEST_DB_URL = "sqlite+aiosqlite:///:memory:"
+
+
+@pytest.fixture(autouse=True)
+def _init_cache_for_tests():
+    """В тестах поднимаем in-memory backend для fastapi-cache2.
+
+    Lifespan приложения через ASGITransport срабатывает ненадёжно (зависит
+    от версии httpx/starlette), поэтому инициализируем кэш напрямую — это
+    гарантирует, что декоратор `@cache` в `redirect_link` не падает на
+    `FastAPICache.get_prefix()`.
+    """
+    FastAPICache.init(InMemoryBackend(), prefix="shortist-cache")
+    yield
+    # сбрасываем состояние, чтобы кэш одного теста не утекал в следующий
+    FastAPICache.reset()
 
 
 @pytest.fixture(scope="session")

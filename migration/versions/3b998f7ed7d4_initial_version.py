@@ -39,7 +39,7 @@ def upgrade() -> None:
     sa.Column('short_id', sa.String(), nullable=False),
     sa.Column('custom_alias', sa.String(), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
-    sa.Column('expire_at', sa.DateTime(), nullable=False),
+    sa.Column('expire_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('last_clicked_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('click_count', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),

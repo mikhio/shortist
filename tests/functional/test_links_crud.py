@@ -1,7 +1,6 @@
 """Функциональные тесты CRUD-операций над ссылками: create / stats / update / delete / search."""
 from datetime import datetime, timedelta, timezone
 
-import pytest
 from httpx import AsyncClient
 
 
@@ -25,14 +24,6 @@ async def test_anonymous_can_create_link(async_client: AsyncClient):
     assert body["custom_alias"] is None
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "Баг 4: crud.create_link не сохраняет custom_alias в модель — "
-        "поле сохраняется только как short_id, а custom_alias остаётся NULL. "
-        "Поэтому в ответе custom_alias=null, тест краснеет до фикса в PR #2."
-    ),
-)
 async def test_create_link_with_custom_alias(authenticated_client: AsyncClient):
     resp = await authenticated_client.post(
         "/links/shorten",
@@ -48,15 +39,6 @@ async def test_create_link_with_custom_alias(authenticated_client: AsyncClient):
     assert body["short_id"] == "my-link"
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "Связано с багом 4: проверка уникальности alias в crud.create_link "
-        "идёт по полю custom_alias, которое всегда NULL. "
-        "Из-за этого второй POST не ловится в коде, валится UNIQUE constraint "
-        "на short_id и FastAPI возвращает 500 вместо 400. Фикс в PR #2."
-    ),
-)
 async def test_duplicate_alias_returns_400(authenticated_client: AsyncClient):
     payload = {
         "original_url": "https://example.com",

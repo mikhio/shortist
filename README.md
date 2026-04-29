@@ -1,7 +1,7 @@
 # shortist
 
 [![tests](https://github.com/mikhio/shortist/actions/workflows/tests.yml/badge.svg)](https://github.com/mikhio/shortist/actions/workflows/tests.yml)
-[![coverage](https://img.shields.io/badge/coverage-97%25-brightgreen)](htmlcov/index.html)
+[![coverage](https://img.shields.io/badge/coverage-94%25-brightgreen)](htmlcov/index.html)
 [![python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/downloads/)
 
 API-сервис сокращения ссылок на FastAPI + PostgreSQL + Redis. Этот форк
@@ -31,15 +31,18 @@ API-сервис сокращения ссылок на FastAPI + PostgreSQL + R
 
 ---
 
-## Найденные дефекты (PR #1)
+## Найденные дефекты и фиксы
 
-| № | Где | Что не так | Тест | Статус в PR #1 |
-|---|-----|------------|------|----------------|
-| 1 | `src/links/routers.py:redirect_link` | `expire_at` сохраняется, но при редиректе не проверяется. Просроченные ссылки продолжают редиректить вечно, несмотря на готовый `LinkExpiredError` (410). | `tests/functional/test_expire.py::test_expired_link_returns_410` | xfail → зелёный в PR #2 |
-| 2 | `src/main.py` | Ручка `GET /health` отсутствует, хотя `docker-compose.yaml` ссылается на неё в healthcheck контейнера `app` → контейнер всегда `unhealthy`. | `tests/functional/test_health.py::test_health_endpoint_returns_200` | xfail → зелёный в PR #2 |
-| 3 | `src/links/exceptions.py` | `AliasLengthError` и `LinkExpiredError` объявлены, но не используются (мёртвый код). | покрытие в `tests/unit/test_exceptions.py` | будут активированы в PR #2 |
-| 4 | `src/links/crud.py:create_link` | `custom_alias` не сохраняется в модель — пишется только `short_id`. Из-за этого в ответе `custom_alias=null` и проверка уникальности по полю `custom_alias` всегда возвращает «свободно». Повторное создание с тем же alias валит UNIQUE constraint на `short_id` и FastAPI отдаёт 500 вместо 400. | `tests/functional/test_links_crud.py::test_create_link_with_custom_alias`, `test_duplicate_alias_returns_400` | xfail → зелёный в PR #2 |
-| 5 | `requirements.txt` + код | `fastapi_cache`, `aioredis`, `redis` объявлены в зависимостях, но `FastAPICache.init` нигде не вызывается → кэш фактически не работает. | покрыто нагрузочным профилем | подключим в PR #2 |
+| № | Где | Что не так (нашли в PR #1) | Что сделали в PR #2 |
+|---|-----|----------------------------|---------------------|
+| 1 | `src/links/routers.py:redirect_link` | `expire_at` сохраняется, но при редиректе не проверяется → просроченные ссылки редиректят вечно, хотя `LinkExpiredError` (410) объявлен. | Добавили проверку `expire_at < now(UTC)`, при просрочке → `LinkExpiredError`. Тест `test_expired_link_returns_410` зеленеет. |
+| 2 | `src/main.py` | Ручки `GET /health` нет, хотя `docker-compose.yaml` ссылается на неё в healthcheck → контейнер `app` `unhealthy`. | Добавили `@app.get("/health")` → `{"status": "ok"}`. Контейнер теперь `healthy`. |
+| 3 | `src/links/exceptions.py` | `AliasLengthError`, `PermissionDeniedError`, `InvalidURLFormatError` — мёртвый код, нигде не вызываются. | Удалили мёртвые классы, оставили только используемые: `NotUniqueAliasError`, `LinkExpiredError`. |
+| 4 | `src/links/crud.py:create_link` | `custom_alias` не сохранялся в модель — только в `short_id`. Из-за этого ответ возвращал `custom_alias=null`, проверка уникальности не работала, повторный POST с тем же alias валил UNIQUE constraint и отдавал 500 вместо 400. | Прокинули `custom_alias=custom_alias` в `models.Link(...)`. Тесты `test_create_link_with_custom_alias` и `test_duplicate_alias_returns_400` зеленеют. |
+| 5 | deps + код | `fastapi_cache`, `aioredis` в `requirements.txt`, но `FastAPICache.init` нигде не вызывается. | Заменили на `fastapi-cache2[redis]`, инициализируем в `lifespan`-обработчике `src/main.py`, кэшируем редирект на 60 секунд, инвалидируем на PUT/DELETE. См. ниже сравнительные замеры. |
+| 6 | `migration/` | Две альтернативные head-миграции (обе с `down_revision=None`), обе создают одну и ту же таблицу `user` → `alembic upgrade heads` падает на DuplicateTable. | Удалили устаревшую `a1b5c3ea8b92_initial_migration.py` (она ещё со схемой `short_url` / `link_owner_id` до рефакторинга). Осталась одна актуальная head. Также поправили `expire_at` на `nullable=True, timezone=True`. |
+| 7 | `requirements.txt` | Пакет `dotenv` (заброшенный squatter на PyPI) вместо `python-dotenv`; `aioredis` несовместим с Python 3.12 и конфликтует с `redis>=4.2`. | `dotenv` → `python-dotenv`; `aioredis` → нативный `redis>=4.2.asyncio`; `fastapi_cache` → `fastapi-cache2[redis]`. |
+| 8 | `Dockerfile` | `python:3.9-slim` — устарел и расходится с CI (3.12). | `python:3.12-slim` — единый рантайм везде. |
 
 ---
 
@@ -78,9 +81,10 @@ open htmlcov/index.html
 В коммит включён готовый `htmlcov/` — отчёт о покрытии открывается **без
 запуска тестов**, как этого требует задание ИПР.
 
-Локальный прогон даёт **97% покрытия**. 5 непокрытых строк — это ветки,
-заблокированные багами (раз они недостижимы → не покрыты). После фикса
-в PR #2 покрытие должно вырасти.
+**94% покрытия** в PR #2. По сравнению с 97% в PR #1: добавились новые
+ветки (lifespan-инициализация Redis с fallback, ручной cache get/set/clear,
+проверка `expire_at`) — некоторые из них ловятся только в проде и не
+поднимаются в тестах (например, реальное Redis-подключение в lifespan).
 
 ```
 src/auth/auth.py              7      0      0      0   100%
@@ -88,14 +92,14 @@ src/auth/manager.py          18      0      0      0   100%
 src/auth/models.py           14      0      0      0   100%
 src/auth/schemas.py          11      0      0      0   100%
 src/config.py                10      0      0      0   100%
-src/database.py               9      2      0      0    78%   (get_db override'ится в тестах)
-src/links/crud.py            38      1      4      1    95%   (NotUniqueAliasError — заблокирован багом 4)
-src/links/exceptions.py      20      0      0      0   100%
+src/database.py               9      2      0      0    78%
+src/links/crud.py            38      0      4      0   100%
+src/links/exceptions.py      10      0      0      0   100%
 src/links/models.py          15      0      0      0   100%
-src/links/routers.py         42      1      8      0    98%   (catch NotUniqueAliasError — баг 4)
+src/links/routers.py         82      4     18      2    94%
 src/links/schemas.py         29      1      4      1    94%
-src/main.py                  14      0      0      0   100%
-TOTAL                       227      5     16      2    97%
+src/main.py                  33      8      0      0    76%
+TOTAL                       276     15     26      3    94%
 ```
 
 ---
@@ -146,7 +150,41 @@ python scripts/plot_loadtest.py \
 * fail rate > 1%;
 * RPS перестал расти при росте users (saturation).
 
-### Результаты прогона PR #1 (без кэша)
+### Сравнение «без кэша vs с кэшем» (главный результат)
+
+После подключения `fastapi-cache2[redis]` повторили тот же step-up
+профиль 50→800 юзеров. Сравнение по ключевым ступеням:
+
+| users | RPS без кэша | RPS с кэшем | speedup | p95 без кэша | p95 с кэшем |
+|------:|-------------:|------------:|--------:|-------------:|------------:|
+|  50 |   150 |   153 | 1.0× |    23 ms |    7 ms |
+| 100 |   283 |   307 | 1.1× |    71 ms |    6 ms |
+| 200 |   429 |   609 | 1.4× |   298 ms |    7 ms |
+| 400 |   540 | 1 215 | **2.3×** |   615 ms |    8 ms |
+| 600 |   487 | 1 262 | **2.6×** |   740 ms |   13 ms |
+| 800 |   467 | 1 950 | **4.2×** | 1 438 ms |  132 ms |
+
+* На 800 юзерах **p95 упал в 11 раз** (1438 → 132 ms), **RPS вырос в 4.2 раза** (467 → 1950).
+* Saturation отодвинулся за пределы прогона — RPS продолжает расти на верхней ступени.
+* Failures = 0 в обоих прогонах.
+
+Графики:
+
+* `reports/baseline/latency-vs-users.png` — без кэша.
+* `reports/cached/latency-vs-users.png` — с кэшем.
+* `reports/comparison.png` — оба прогона на одной оси.
+
+### Tradeoff: счётчик кликов
+
+Первый GET `/links/{short_id}` инкрементирует `click_count` в Postgres,
+но последующие 60 секунд отдаются из Redis и **не пишут в БД**. Это
+сознательный компромисс: точный счётчик кликов жертвуется ради latency.
+Тест `test_redirect_increments_click_count` это учитывает (проверяет
+`click_count >= 1`, а не строгое равенство). Если нужна строгая
+аналитика — её делают отдельным конвейером (Kafka → ClickHouse), а не
+синхронно на горячей ручке.
+
+### Результаты прогона PR #1 (без кэша) — для справки
 
 Артефакты в `reports/baseline/`:
 
