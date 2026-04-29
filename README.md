@@ -26,6 +26,7 @@ API-сервис сокращения ссылок на FastAPI + PostgreSQL + R
 8. [Нагрузочное тестирование](#нагрузочное-тестирование)
 9. [Структура проекта](#структура-проекта)
 10. [Описание API](#описание-api)
+11. [Артефакты](#артефакты)
 
 ---
 
@@ -332,3 +333,29 @@ cp .env.example .env  # заполнить DB_*, SECRET
 docker compose up -d --build
 docker compose exec web alembic upgrade head
 ```
+
+---
+
+## Артефакты
+
+Все артефакты сдачи опубликованы через GitHub Pages — открываются прямо
+в браузере без локального запуска.
+
+**Покрытие тестами:**
+* [HTML coverage report](https://mikhio.github.io/shortist/htmlcov/index.html) — построчное покрытие, 94 %.
+
+**Нагрузочные отчёты Locust:**
+* [Прогон без кэша](https://mikhio.github.io/shortist/reports/baseline/locust.html)
+* [Прогон с кэшем](https://mikhio.github.io/shortist/reports/cached/locust.html)
+
+**Графики:**
+* [Сравнение «без кэша vs с кэшем» — p95 / RPS](https://mikhio.github.io/shortist/reports/comparison.png)
+* [Прогон без кэша — latency / RPS / users](https://mikhio.github.io/shortist/reports/baseline/latency-vs-users.png)
+* [Прогон с кэшем — latency / RPS / users](https://mikhio.github.io/shortist/reports/cached/latency-vs-users.png)
+* [CPU контейнеров `app` / `postgres` / `redis` — сравнение](https://mikhio.github.io/shortist/reports/docker-stats-comparison.png)
+
+**Сырые данные (CSV / log):**
+* Без кэша: [`run_stats_history.csv`](reports/baseline/run_stats_history.csv) · [`docker-stats.log`](reports/baseline/docker-stats.log)
+* С кэшем: [`run_stats_history.csv`](reports/cached/run_stats_history.csv) · [`docker-stats.log`](reports/cached/docker-stats.log)
+
+**Сводная страница со всем выше:** [mikhio.github.io/shortist/](https://mikhio.github.io/shortist/).
