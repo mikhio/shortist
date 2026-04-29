@@ -2,3 +2,18 @@
 .env
 __pycache__
 */__pycache__
+**/__pycache__
+*.pyc
+
+# venv
+.venv/
+venv/
+
+# pytest / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+
+# locust
+locust_logs/
